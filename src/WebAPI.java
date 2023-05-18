@@ -9,7 +9,7 @@ public class WebAPI {
     public static void getNowPlaying() {
         String APIkey = "0d84fb3d8f2d7a81762b0619024966f4"; // your personal API key on TheMovieDatabase
         String queryParameters = "?api_key=" + APIkey;
-        String endpoint = "https://api.themoviedb.org/3/movie/now_playing";
+        String endpoint = "https://developer.themoviedb.org/reference/movie-top-rated-list";
         String url = endpoint + queryParameters;
         String urlResponse = "";
         try {
