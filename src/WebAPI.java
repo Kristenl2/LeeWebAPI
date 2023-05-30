@@ -5,11 +5,14 @@ import java.net.http.HttpResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Queue;
+import java.util.Scanner;
+
 public class WebAPI {
     public static void getNowPlaying() {
         String APIkey = "0d84fb3d8f2d7a81762b0619024966f4"; // your personal API key on TheMovieDatabase
         String queryParameters = "?api_key=" + APIkey;
-        String endpoint = "https://developer.themoviedb.org/reference/movie-top-rated-list";
+        String endpoint = "https://api.themoviedb.org/3/movie/top_rated";
         String url = endpoint + queryParameters;
         String urlResponse = "";
         try {
@@ -35,6 +38,34 @@ public class WebAPI {
             String posterPath = movieObj.getString("poster_path");
             String fullPosterPath = "https://image.tmdb.org/t/p/w500" + posterPath;
             System.out.println(movieID + " " + movieTitle + " " + fullPosterPath);
+        }
+        Scanner scan = new Scanner(System.in);
+        System.out.print("Enter a movie ID to learn more: ");
+        String ID = scan.nextLine();
+
+        String endpoint2 = "https://api.themoviedb.org/3/movie/" + ID;
+        String url2 = endpoint2 + queryParameters;
+        try {
+            URI myUri = URI.create(url2); // creates a URI object from the url string
+            HttpRequest request = HttpRequest.newBuilder().uri(myUri).build();
+            HttpClient client = HttpClient.newHttpClient();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            urlResponse = response.body();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        JSONObject jsonObj2 = new JSONObject(urlResponse);
+        String title = "Title: " + jsonObj2.getString("title");
+        String overview = "Overview: " + jsonObj2.getString("overview");
+        String releaseDate = "Release Datae: " + jsonObj2.getString("release_date");
+        int runtime = jsonObj2.getInt("runtime");
+        int revenue = jsonObj2.getInt("revenue");
+        System.out.println(title + "\n" + overview + "\n" + releaseDate + "\n" + "Runtime: " + runtime + "\n" + "Revenue: " + revenue);
+        JSONArray array = jsonObj2.getJSONArray("genres");
+        System.out.println("Genres: ");
+        for(int i = 0; i< array.length(); i++){
+            System.out.println(array.getJSONObject(i).getString("name"));
         }
     }
 }
